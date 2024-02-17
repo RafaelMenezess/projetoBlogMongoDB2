@@ -65,23 +65,22 @@ namespace projetoBlog.Controllers
         [HttpGet]
         public async Task<ActionResult> Publicacao(string id)
         {
+            var connctionMongoDB = new AcessoMongoDB();
+            var publicacao = connctionMongoDB.Publicacoes.Find(x=> x.Id == id).FirstOrDefault();
 
-            //XXX TRABALHE AQUI
-            // Busque na base MongoDB a publicação pelo ID
-            // Descomente as linhas abaixo
-            //if (publicacao == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
+            if (publicacao == null)
+            {
+                return RedirectToAction("Index");
+            }
 
-            //var model = new PublicacaoModel
-            //{
-            //    Publicacao = publicacao,
-            //    NovoComentario = new NovoComentarioModel
-            //    {
-            //        PublicacaoId = id
-            //    }
-            //};
+            var model = new PublicacaoModel
+            {
+                Publicacao = publicacao,
+                NovoComentario = new NovoComentarioModel
+                {
+                    PublicacaoId = id
+                }
+            };
 
             return View(model);
         }
