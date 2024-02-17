@@ -41,9 +41,19 @@ namespace projetoBlog.Controllers
                 return View(model);
             }
 
-            //XXX TRABALHE AQUI
-            // Inclua a publicação na base de dados
-            // Descomete a linha abaixo
+            var post = new Publicacao
+            {
+                Autor = User.Identity.Name,
+                Titulo = model.Titulo,
+                Conteudo = model.Conteudo,
+                Tags = model.Tags.Split(' ', ',', ';'),
+                DataCriacao = DateTime.UtcNow,
+                Comentarios = new List<Comentario>()
+            };
+
+            var connctionMongoDB = new AcessoMongoDB();
+            await connctionMongoDB.Publicacoes.InsertOneAsync(post);
+
             return RedirectToAction("Publicacao", new { id = post.Id });
         }
 
@@ -77,7 +87,7 @@ namespace projetoBlog.Controllers
 
             // XXX TRABALHE AQUI
             // Busque as publicações pela TAG escolhida.
-                       
+
             return View(posts);
         }
 
@@ -91,8 +101,8 @@ namespace projetoBlog.Controllers
 
             //XXX TRABALHE AQUI
             // Inclua novo comentário na publicação já existente.
-                        
-             return RedirectToAction("Publicacao", new { id = model.PublicacaoId });
+
+            return RedirectToAction("Publicacao", new { id = model.PublicacaoId });
         }
     }
 }
