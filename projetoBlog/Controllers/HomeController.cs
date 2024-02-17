@@ -8,6 +8,7 @@ using MongoDB.Driver;
 using projetoBlog.Models;
 using projetoBlog.Models.Home;
 using System.Linq.Expressions;
+using MongoDB.Bson;
 
 namespace projetoBlog.Controllers
 {
@@ -15,16 +16,20 @@ namespace projetoBlog.Controllers
     {
         public async Task<ActionResult> Index()
         {
+            var connctionMongoDB = new AcessoMongoDB();
+            var filtro = new BsonDocument();
+            var publicacoesRecentes = await connctionMongoDB.Publicacoes
+                                    .Find(filtro)
+                                    .SortByDescending(x => x.DataCriacao)
+                                    .Limit(10)
+                                    .ToListAsync();
 
-            //XXX TRABALHE AQUI
-            // liste as dez mais recentes publicações
-            // Descomente as linhas abaixo
-            //var model = new IndexModel
-            //{
-            //    PublicacoesRecentes = PublicacoesRecentes
-            //};
+            var model = new IndexModel
+            {
+                PublicacoesRecentes = publicacoesRecentes
+            };
 
-            //return View(model);
+            return View(model);
         }
 
         [HttpGet]
